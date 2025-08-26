@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       tileset:
+        description: Tile region to generate
         type: choice
         options:
           - asi
@@ -14,12 +15,15 @@ on:
           - eur
           - test  
       zl:
+        description: Zoom level of the ortho
         type: string
-        default: 16
+        default: '16'
       relname:
+        description: Release Name
         type: string
         default: ''
       zipnum:
+        description: Zip iteration number
         type: string
         required: true
 

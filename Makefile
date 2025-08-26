@@ -46,7 +46,8 @@ ortho4xp.diff: Ortho4XP
 
 Ortho4XP:
 	git clone --depth=1 https://github.com/oscarpilote/Ortho4XP.git
-	cd $@ && patch -p1 -u < ../ortho4xp.diff
+# 	cd $@ && patch -p1 -u < ../ortho4xp.diff
+	cd $@
 	cp extract_overlay.py $@/.
 	cp Ortho4XP.cfg $@/.
 	mkdir $@/tmp
@@ -67,7 +68,7 @@ Ortho4XP/Tiles/zOrtho4XP_%: Ortho4XP
 	@echo "Make tile $@" 
 	set -e;\
 	export COORDS=$$(echo $* | sed -e 's/\([-+][0-9]\+\)\([-+][0-9]\+\)/\1 \2/g');\
- 	cd $< && python3 Ortho4XP_v130.py $$COORDS BI 16
+ 	cd $< && python3 Ortho4XP.py $$COORDS BI 16
 
 # Static pattern rule for the zip files
 $(ZIPS): z_%.zip: z_%

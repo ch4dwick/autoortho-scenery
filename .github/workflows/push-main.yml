@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       tileset:
+        description: Tile region to generate
         type: choice
         options:
           - asi
@@ -14,21 +15,23 @@ on:
           - eur
           - test  
       zl:
+        description: zoom level of the ortho
         type: string
-        default: 16
+        default: '16'
       relname:
+        description: Release Name
         type: string
         default: ''
 
 
 jobs:
   ziplist:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     outputs:
       chunks: ${{ steps.chunks.outputs.chunks }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Gen tile sub-lists
         id: chunks
@@ -56,15 +59,15 @@ jobs:
     #if: startsWith(github.ref, 'refs/tags/')
     needs: call-build
 
-    environment: release
+    # environment: release
 
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: ${{ inputs.tileset }}_info.json
           tag_name: ${{ inputs.relname }}     

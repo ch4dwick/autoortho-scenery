@@ -4,6 +4,7 @@ ZL?=16
 
 TILENAME?=test
 
+# This variable is expected to be null if the tile list has not yet been split
 TILES:=$(addprefix z_$(TILENAME)_, $(shell ls $(TILENAME)_tile_list.* | awk -F. '{ print $$2 }') ) 
 TILE_ZIPS=$(addsuffix .zip, $(TILES))
 
@@ -11,8 +12,9 @@ ZIPS=$(TILE_ZIPS)
 
 # Get the tiles listed in each list file
 .SECONDEXPANSION:
-TILE_FILES = $(addsuffix .dsf, $(addprefix Ortho4XP/Tiles/*/*/*/, $(basename $(shell cat $(TILENAME)_tile_list.$* ) ) ) )
-#TILE_FILES = $(basename $(shell cat $(TILENAME)_tile_list.$* ) )
+# This variable is expected to be null if the tile list has not yet been split
+TILE_FILES=$(addsuffix .dsf, $(addprefix Ortho4XP/Tiles/*/*/*/, $(basename $(shell cat $(TILENAME)_tile_list.* ) ) ) )
+#TILE_FILES=$(basename $(shell cat $(TILENAME)_tile_list.$* ) )
 
 
 all: $(ZIPS)
@@ -43,8 +45,9 @@ ortho4xp.diff:
 
 Ortho4XP:
 	git clone --depth=1 https://github.com/oscarpilote/Ortho4XP.git
-	cd $@ && patch -p1 -u < ../ortho4xp.diff
-	cp extract_overlay.py $@/.
+#	cd $@ && patch -p1 -u < ../ortho4xp.diff
+	cd $@
+#	cp extract_overlay.py $@/.
 	cp Ortho4XP.cfg $@/.
 	mkdir $@/tmp
 
@@ -72,7 +75,7 @@ Ortho4XP/Tiles/*/*/*/%.dsf: Ortho4XP
 	set -e;\
 	export COORDS=$$(echo $(@) | sed -e 's/.*\/\([-+][0-9]\+\)\([-+][0-9]\+\).dsf/\1 \2/g');\
 	echo $$COORDS; \
- 	cd $< && python3 Ortho4XP_v130.py $$COORDS BI $(ZL) || ( echo "ERROR DETECTED! Retry tile $@ with noroads config."; cp $(CURDIR)/Ortho4XP_noroads.cfg $(CURDIR)/Ortho4XP/Tiles/zOrtho4XP_$*/Ortho4XP_$*.cfg && python3 Ortho4XP_v130.py $$COORDS BI $(ZL) )
+ 	cd $< && python3 Ortho4XP.py $$COORDS BI $(ZL) || ( echo "ERROR DETECTED! Retry tile $@ with noroads config."; cp $(CURDIR)/Ortho4XP_noroads.cfg $(CURDIR)/Ortho4XP/Tiles/zOrtho4XP_$*/Ortho4XP_$*.cfg && python3 Ortho4XP.py $$COORDS BI $(ZL) )
 	#touch $@
 
 .SECONDARY: $(TILE_FILES) 

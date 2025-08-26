@@ -5,7 +5,7 @@ on:
 
 jobs:
   ziplist:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     outputs:
       chunks: ${{ steps.chunks.outputs.chunks }}
     steps:
