@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-
-import os
 import sys
+import os
 Ortho4XP_dir='..' if getattr(sys,'frozen',False) else '.'
 sys.path.append(os.path.join(Ortho4XP_dir,'src'))
+
+import O4_File_Names as FNAMES
+sys.path.append(FNAMES.Provider_dir)
 import O4_Overlay_Utils as OVLY
 import O4_Config_Utils as CFG  # CFG imported last because it can modify other modules variables
 

@@ -40,15 +40,15 @@ z_$(TILENAME)_%.zip.info: $(TILENAME)_tile_list.%
 # Ortho4XP setup
 #
 
-ortho4xp.diff:
-	cd Ortho4XP && git diff > ../ortho4xp.diff
+# ortho4xp.diff:
+# 	cd Ortho4XP && git diff > ../ortho4xp.diff
 
 Ortho4XP:
 	git clone --depth=1 https://github.com/oscarpilote/Ortho4XP.git
 #	cd $@ && patch -p1 -u < ../ortho4xp.diff
-	cd $@
-#	cp extract_overlay.py $@/.
 	cp Ortho4XP.cfg $@/.
+	cp extract_overlay.py $@/.
+	cd $@
 	mkdir $@/tmp
 
 
@@ -95,4 +95,5 @@ clean:
 	-rm -rf Ortho4XP
 	-rm $(ZIPS)
 	-rm -rf z_$(TILENAME)
+	-rm -rf z_$(TILENAME)_*
 	-rm $(TILENAME)_tile_list.*
