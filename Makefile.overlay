@@ -10,7 +10,7 @@ all: $(OVERLAY_PATHS) move_to_package y_$(OVERLAYNAME)_overlays.zip y_$(OVERLAYN
 
 y_$(OVERLAYNAME)_overlays.zip:
 	zip -r $@ y_$(OVERLAYNAME)
-	split $@ -d -b1G $@.
+# 	split $@ -d -b1G $@.
 
 %.sha256: %		
 	sha256sum $< > $@
