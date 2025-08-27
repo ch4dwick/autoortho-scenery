@@ -6,9 +6,7 @@ TILENAME?=test
 
 # This variable is expected to be null if the tile list has not yet been split
 TILES:=$(addprefix z_$(TILENAME)_, $(shell ls $(TILENAME)_tile_list.* | awk -F. '{ print $$2 }') ) 
-TILE_ZIPS=$(addsuffix .zip, $(TILES))
-
-ZIPS=$(TILE_ZIPS)
+ZIPS=$(addsuffix .zip, $(TILES))
 
 # Get the tiles listed in each list file
 .SECONDEXPANSION:
@@ -47,7 +45,6 @@ Ortho4XP:
 	git clone --depth=1 https://github.com/oscarpilote/Ortho4XP.git
 #	cd $@ && patch -p1 -u < ../ortho4xp.diff
 	cp Ortho4XP.cfg $@/.
-	cp extract_overlay.py $@/.
 	cd $@
 	mkdir $@/tmp
 

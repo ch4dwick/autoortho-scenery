@@ -1,34 +1,33 @@
 OVERLAYNAME?=test
 
+# Source folder where the overlays are initially downloaded by O4XP
+OVERLAY_PATHS:=$(addprefix Ortho4XP/yOrtho4XP_Overlays/*/*/, $(shell cat $(OVERLAYNAME)_tile_list) )
+
+# Generate the final overlay folder path
 OVERLAYS=$(addprefix y_$(OVERLAYNAME)/yOrtho4XP_Overlays/*/*/, $(shell cat $(OVERLAYNAME)_tile_list) )
 
-y_$(OVERLAYNAME)_overlays.zip: $(OVERLAYS)
+all: $(OVERLAY_PATHS) move_to_package y_$(OVERLAYNAME)_overlays.zip y_$(OVERLAYNAME)_overlays.zip.sha256
+
+y_$(OVERLAYNAME)_overlays.zip:
 	zip -r $@ y_$(OVERLAYNAME)
 	split $@ -d -b1G $@.
 
 %.sha256: %		
 	sha256sum $< > $@
 
+# Final overlay folder
 y_$(OVERLAYNAME):
 	mkdir -p $@
 
-
-Ortho4XP/yOrtho4XP_Overlays/*/*/%.dsf: Ortho4XP
+# Downloads the overlays
+$(OVERLAY_PATHS): %: Ortho4XP y_$(OVERLAYNAME)
 	@echo "Make overlay $@"
 	set -e;\
 	export COORDS=$$(echo $@ | sed -e 's|.*/\([-+][0-9]\+\)\([-+][0-9]\+\).dsf|\1 \2|g');\
  	cd $< && python3 extract_overlay.py $$COORDS
 
-# Script Main Entry
-y_$(OVERLAYNAME)/yOrtho4XP_Overlays/*/*/%.dsf: Ortho4XP/yOrtho4XP_Overlays/*/*/%.dsf y_$(OVERLAYNAME)
-	set -e;\
-	export DSTREGION=$$(echo "$<" | awk -F "/" '{print $$4}');\
-	export DSTFILE=$$(echo "$<" | awk -F "/" '{print $$5}');\
-	export DSTPATH="y_$(OVERLAYNAME)/yOrtho4XP_Overlays/Earth nav data/$$DSTREGION/$$DSTFILE";\
-	echo "Copy $< to $$DSTPATH";\
-	mkdir -p "$$(dirname "$$DSTPATH")";\
-	cp "$<" "$$DSTPATH" || true;
-
+move_to_package: y_$(OVERLAYNAME)
+	cd Ortho4XP && cp -r "yOrtho4XP_Overlays" "../y_$(OVERLAYNAME)" || true;
 #
 # Ortho4XP setup
 #
@@ -47,4 +46,4 @@ Ortho4XP:
 clean:
 	-rm -rf Ortho4XP
 	-rm -rf y_$(OVERLAYNAME)
-	-rm -rf y_$(OVERLAYNAME)_overlays.zip
+	-rm -rf y_$(OVERLAYNAME)_overlays.zip*

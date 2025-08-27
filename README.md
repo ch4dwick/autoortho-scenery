@@ -33,20 +33,16 @@ OVERLAYNAME = This the region of overlays you want to download. Valid values are
 
 ## Download Overlay
 
+Update Ortho4XP.cfg key custom_overlay_src to your local X-Plane 12 Global Scenery folder found in <Your X-Plane 12 folder>\Global Scenery\X-Plane 12 Global Scenery
+
 ```bash
-OVERLAYNAME=test make -f Makefile.overlay 'y_test/yOrtho4XP_Overlays/*/*/+00-051.dsf'
+OVERLAYNAME=test make -f Makefile.overlay all
 ```
-Note: The cooridinates at the end is the region you want to the script to generate.
+
+**WARNING**: All regions except 'test' are long running, bandwith and storage consuming processes. Make sure your home set up can handle it. Ortho provider may also throttle your downloads.
 
 - installs the latest Ortho4XP
 - copies our custom configuration
 - copies overlay extract script
 - downloads and saves the overlay under Ortho4XP/yOrtho4XP_Overlays
 - collates them under ./y_(OVERLAYNAME)
-
-## Package the overlay
-
-```bash
-OVERLAYNAME=test make -f Makefile.overlay 'y_test_overlays.zip'
-```
-Generates a zip file based overlay you just downloaded.
