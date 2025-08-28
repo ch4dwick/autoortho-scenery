@@ -37,7 +37,7 @@ jobs:
       - name: Build
         id: build
         run: |
-          OVERLAYNAME=${{ inputs.setname }} timeout 300m make -f Makefile.overlay y_${{ inputs.setname }}_overlays.zip && echo "done=true" >> "$GITHUB_OUTPUT" || echo "done=false" >> "$GITHUB_OUTPUT"
+          OVERLAYNAME=${{ inputs.setname }} timeout 300m make -f Makefile.overlay all && echo "done=true" >> "$GITHUB_OUTPUT" || echo "done=false" >> "$GITHUB_OUTPUT"
           
       - name: Show work
         if: steps.build.outputs.done == 'true'
@@ -45,11 +45,7 @@ jobs:
           OVERLAYNAME=${{ inputs.setname }} make -f Makefile.overlay y_${{ inputs.setname }}_overlays.zip.sha256
           echo '### ${{ inputs.setname }} : y_${{ inputs.setname }}_overlays.zip' >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-          #unzip -l y_${{ inputs.setname }}_overlays.zip *.dsf >> $GITHUB_STEP_SUMMARY
           echo "COMPLETED?: ${{ steps.build.outputs.done }}" >> $GITHUB_STEP_SUMMARY
-          OVERLAYNAME=${{ inputs.setname }} make -f Makefile.overlay y_${{ inputs.setname }}_overlays.zip.info >>  $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          echo '---' >> $GITHUB_STEP_SUMMARY
 
       - name: Release
         if: steps.build.outputs.done == 'true' && inputs.relname != ''
@@ -107,7 +103,7 @@ jobs:
       - name: ReBuild1
         id: rebuild
         run: |
-          OVERLAYNAME=${{ inputs.setname }} timeout 300m make -f Makefile.overlay y_${{ inputs.setname }}_overlays.zip && echo "done=true" >> "$GITHUB_OUTPUT" || echo "done=false" >> "$GITHUB_OUTPUT"
+          OVERLAYNAME=${{ inputs.setname }} timeout 300m make -f Makefile.overlay all && echo "done=true" >> "$GITHUB_OUTPUT" || echo "done=false" >> "$GITHUB_OUTPUT"
           
       - name: Show work
         if: steps.rebuild.outputs.done == 'true'
@@ -115,11 +111,7 @@ jobs:
           OVERLAYNAME=${{ inputs.setname }} make -f Makefile.overlay y_${{ inputs.setname }}_overlays.zip.sha256
           echo '### ${{ inputs.setname }} : y_${{ inputs.setname }}_overlays.zip' >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-          #unzip -l y_${{ inputs.setname }}_overlays.zip *.dsf >> $GITHUB_STEP_SUMMARY
           echo "COMPLETED?: ${{ steps.rebuild.outputs.done }}" >> $GITHUB_STEP_SUMMARY
-          OVERLAYNAME=${{ inputs.setname }} make -f Makefile.overlay y_${{ inputs.setname }}_overlays.zip.info >>  $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          echo '---' >> $GITHUB_STEP_SUMMARY
 
       - name: Release
         if: steps.rebuild.outputs.done == 'true' && inputs.relname != ''
@@ -179,7 +171,7 @@ jobs:
         id: rebuild
         run: |
           OVERLAYNAME=${{ inputs.setname }} make -f Makefile.overlay ${{ inputs.setname }}_tile_list_chunks
-          OVERLAYNAME=${{ inputs.setname }} timeout 300m make -f Makefile.overlay y_${{ inputs.setname }}_overlays.zip && echo "done=true" >> "$GITHUB_OUTPUT" || echo "done=false" >> "$GITHUB_OUTPUT"
+          OVERLAYNAME=${{ inputs.setname }} timeout 300m make -f Makefile.overlay all && echo "done=true" >> "$GITHUB_OUTPUT" || echo "done=false" >> "$GITHUB_OUTPUT"
           
       - name: Show work
         if: steps.rebuild.outputs.done == 'true'
@@ -187,11 +179,7 @@ jobs:
           OVERLAYNAME=${{ inputs.setname }} make -f Makefile.overlay y_${{ inputs.setname }}_overlays.zip.sha256
           echo '### ${{ inputs.setname }} : y_${{ inputs.setname }}_overlays.zip' >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-          #unzip -l y_${{ inputs.setname }}_overlays.zip *.dsf >> $GITHUB_STEP_SUMMARY
           echo "COMPLETED?: ${{ steps.rebuild.outputs.done }}" >> $GITHUB_STEP_SUMMARY
-          OVERLAYNAME=${{ inputs.setname }} make -f Makefile.overlay y_${{ inputs.setname }}_overlays.zip.info >>  $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          echo '---' >> $GITHUB_STEP_SUMMARY
 
       - name: Release
         if: steps.rebuild.outputs.done == 'true' && inputs.relname != ''

@@ -22,9 +22,6 @@ on:
 
 jobs:
   build:
-    env:
-      DEBIAN_FRONTEND: noninteractive
-      TZ: America/NewYork
     name: build
     runs-on: ubuntu-latest
 
