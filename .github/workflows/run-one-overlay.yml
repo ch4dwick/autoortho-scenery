@@ -1,0 +1,49 @@
+name: Build one overlay (and create artifact)
+
+on:
+  workflow_dispatch:
+    inputs:
+      tile:
+        description: Tile coordinates
+        type: choice
+        options:
+          - asi
+          - afr
+          - sa
+          - na
+          - aus_pac
+          - eur
+          - test  
+        default: 'test'
+
+jobs:
+  build:
+    env:
+      DEBIAN_FRONTEND: noninteractive
+      TZ: America/NewYork
+      GH_TOKEN: ${{ github.token }}
+
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install reqs
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3 python3-pip python3-tk zip libgeos-dev
+          pip3 install certifi chardet idna numpy Pillow pyproj requests Rtree Shapely urllib3 scikit-fmm
+          make --version
+
+      - name: Build
+        id: build
+        run: |
+          OVERLAYNAME=${{ inputs.tile }} timeout 20m make -f Makefile.overlay y_${{ inputs.tile }}_overlays.zip
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: y_${{ inputs.tile }}_overlays.zip
+          path: ./z_${{ inputs.tile }}_overlays.zip
+          retention-days: 1
