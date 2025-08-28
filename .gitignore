@@ -2,5 +2,7 @@
 *.swp
 Ortho4XP
 *_tile_list.*
-z_*
-y_*
+/var/
+/.venv/
+/z_*_*/
+/z_*_*.zip
