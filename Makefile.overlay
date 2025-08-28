@@ -31,7 +31,7 @@ $(OVERLAY_PATHS): %: Ortho4XP y_$(OVERLAYNAME)
  	cd $< && python3 extract_overlay.py $$COORDS
 
 move_to_package: y_$(OVERLAYNAME)
-	cd Ortho4XP && cp -r "yOrtho4XP_Overlays" "../y_$(OVERLAYNAME)" || true;
+	cd Ortho4XP && cp -r "yOrtho4XP_Overlays" "../y_$(OVERLAYNAME)"
 #
 # Ortho4XP setup
 #
