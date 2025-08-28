@@ -4,6 +4,7 @@ on:
   workflow_call:
     inputs:
       zip:
+        description: Zip file to generate
         required: true
         type: string
       setname:

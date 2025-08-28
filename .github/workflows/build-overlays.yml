@@ -1,9 +1,10 @@
 name: Build Overlays
 
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
       zip:
+        description: Zip file to generate
         required: true
         type: string
       setname:
@@ -14,10 +15,6 @@ on:
         description: Release name
         type: string
         default: ""
-    outputs:
-      done:
-        description: "Did this complete?"
-        value: ${{ jobs.build.outputs.done }}
 
 jobs:
   build:
