@@ -3,10 +3,6 @@ name: Build Overlays
 on:
   workflow_dispatch:
     inputs:
-      zip:
-        description: Zip file to generate
-        required: true
-        type: string
       setname:
         description: Tile Set
         required: true
@@ -41,17 +37,17 @@ jobs:
       - name: Build
         id: build
         run: |
-          OVERLAYNAME=${{ inputs.setname }} timeout 300m make -f Makefile.overlay ${{ inputs.zip }} && echo "done=true" >> "$GITHUB_OUTPUT" || echo "done=false" >> "$GITHUB_OUTPUT"
+          OVERLAYNAME=${{ inputs.setname }} timeout 300m make -f Makefile.overlay y_${{ inputs.setname }}_overlays.zip && echo "done=true" >> "$GITHUB_OUTPUT" || echo "done=false" >> "$GITHUB_OUTPUT"
           
       - name: Show work
         if: steps.build.outputs.done == 'true'
         run: |
-          OVERLAYNAME=${{ inputs.setname }} make -f Makefile.overlay ${{ inputs.zip }}.sha256
-          echo '### ${{ inputs.setname }} : ${{ inputs.zip }}' >> $GITHUB_STEP_SUMMARY
+          OVERLAYNAME=${{ inputs.setname }} make -f Makefile.overlay y_${{ inputs.setname }}_overlays.zip.sha256
+          echo '### ${{ inputs.setname }} : y_${{ inputs.setname }}_overlays.zip' >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-          #unzip -l ${{ inputs.zip }} *.dsf >> $GITHUB_STEP_SUMMARY
+          #unzip -l y_${{ inputs.setname }}_overlays.zip *.dsf >> $GITHUB_STEP_SUMMARY
           echo "COMPLETED?: ${{ steps.build.outputs.done }}" >> $GITHUB_STEP_SUMMARY
-          TILENAME=${{ inputs.setname }} make -f Makefile.overlay ${{ inputs.zip }}.info >>  $GITHUB_STEP_SUMMARY
+          OVERLAYNAME=${{ inputs.setname }} make -f Makefile.overlay y_${{ inputs.setname }}_overlays.zip.info >>  $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
           echo '---' >> $GITHUB_STEP_SUMMARY
 
@@ -60,8 +56,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            ${{ inputs.zip }}
-            ${{ inputs.zip }}.sha256
+            y_${{ inputs.setname }}_overlays.zip.*
+            y_${{ inputs.setname }}_overlays.zip.*.sha256
           tag_name: ${{ inputs.relname }}
 
       - name: Tar
@@ -73,7 +69,7 @@ jobs:
         if: steps.build.outputs.done == 'false'
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.zip }}
+          name: y_${{ inputs.setname }}_overlays.zip
           path: ./o4xp.tgz
           retention-days: 1
 
@@ -100,7 +96,7 @@ jobs:
       - name: Restore artifacts
         uses: actions/download-artifact@v4
         with:
-          pattern: ${{ inputs.zip }}
+          pattern: y_${{ inputs.setname }}_overlays.zip
           merge-multiple: true
 
       - name: Untar
@@ -111,18 +107,17 @@ jobs:
       - name: ReBuild1
         id: rebuild
         run: |
-          TILENAME=${{ inputs.setname }} make -f Makefile.tiles ${{ inputs.setname }}_tile_list_chunks
-          TILENAME=${{ inputs.setname }} timeout 300m make -f Makefile.tiles ${{ inputs.zip }} && echo "done=true" >> "$GITHUB_OUTPUT" || echo "done=false" >> "$GITHUB_OUTPUT"
+          OVERLAYNAME=${{ inputs.setname }} timeout 300m make -f Makefile.overlay y_${{ inputs.setname }}_overlays.zip && echo "done=true" >> "$GITHUB_OUTPUT" || echo "done=false" >> "$GITHUB_OUTPUT"
           
       - name: Show work
         if: steps.rebuild.outputs.done == 'true'
         run: |
-          TILENAME=${{ inputs.setname }} make -f Makefile.tiles ${{ inputs.zip }}.sha256
-          echo '### ${{ inputs.setname }} : ${{ inputs.zip }}' >> $GITHUB_STEP_SUMMARY
+          OVERLAYNAME=${{ inputs.setname }} make -f Makefile.overlay y_${{ inputs.setname }}_overlays.zip.sha256
+          echo '### ${{ inputs.setname }} : y_${{ inputs.setname }}_overlays.zip' >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-          #unzip -l ${{ inputs.zip }} *.dsf >> $GITHUB_STEP_SUMMARY
+          #unzip -l y_${{ inputs.setname }}_overlays.zip *.dsf >> $GITHUB_STEP_SUMMARY
           echo "COMPLETED?: ${{ steps.rebuild.outputs.done }}" >> $GITHUB_STEP_SUMMARY
-          TILENAME=${{ inputs.setname }} make -f Makefile.tiles ${{ inputs.zip }}.info >>  $GITHUB_STEP_SUMMARY
+          OVERLAYNAME=${{ inputs.setname }} make -f Makefile.overlay y_${{ inputs.setname }}_overlays.zip.info >>  $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
           echo '---' >> $GITHUB_STEP_SUMMARY
 
@@ -131,8 +126,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            ${{ inputs.zip }}
-            ${{ inputs.zip }}.sha256
+            y_${{ inputs.setname }}_overlays.zip.*
+            y_${{ inputs.setname }}_overlays.zip.*.sha256
           tag_name: ${{ inputs.relname }}
 
       - name: Tar
@@ -144,7 +139,7 @@ jobs:
         if: steps.rebuild.outputs.done == 'false'
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.zip }}
+          name: y_${{ inputs.setname }}_overlays.zip
           path: ./o4xp.tgz
           retention-days: 1
           overwrite: true
@@ -172,7 +167,7 @@ jobs:
       - name: Restore artifacts
         uses: actions/download-artifact@v4
         with:
-          pattern: ${{ inputs.zip }}
+          pattern: y_${{ inputs.setname }}_overlays.zip
           merge-multiple: true
 
       - name: Untar
@@ -183,18 +178,18 @@ jobs:
       - name: ReBuild2
         id: rebuild
         run: |
-          TILENAME=${{ inputs.setname }} make -f Makefile.tiles ${{ inputs.setname }}_tile_list_chunks
-          TILENAME=${{ inputs.setname }} timeout 300m make -f Makefile.tiles ${{ inputs.zip }} && echo "done=true" >> "$GITHUB_OUTPUT" || echo "done=false" >> "$GITHUB_OUTPUT"
+          OVERLAYNAME=${{ inputs.setname }} make -f Makefile.overlay ${{ inputs.setname }}_tile_list_chunks
+          OVERLAYNAME=${{ inputs.setname }} timeout 300m make -f Makefile.overlay y_${{ inputs.setname }}_overlays.zip && echo "done=true" >> "$GITHUB_OUTPUT" || echo "done=false" >> "$GITHUB_OUTPUT"
           
       - name: Show work
         if: steps.rebuild.outputs.done == 'true'
         run: |
-          TILENAME=${{ inputs.setname }} make -f Makefile.tiles ${{ inputs.zip }}.sha256
-          echo '### ${{ inputs.setname }} : ${{ inputs.zip }}' >> $GITHUB_STEP_SUMMARY
+          OVERLAYNAME=${{ inputs.setname }} make -f Makefile.overlay y_${{ inputs.setname }}_overlays.zip.sha256
+          echo '### ${{ inputs.setname }} : y_${{ inputs.setname }}_overlays.zip' >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-          #unzip -l ${{ inputs.zip }} *.dsf >> $GITHUB_STEP_SUMMARY
+          #unzip -l y_${{ inputs.setname }}_overlays.zip *.dsf >> $GITHUB_STEP_SUMMARY
           echo "COMPLETED?: ${{ steps.rebuild.outputs.done }}" >> $GITHUB_STEP_SUMMARY
-          TILENAME=${{ inputs.setname }} make -f Makefile.tiles ${{ inputs.zip }}.info >>  $GITHUB_STEP_SUMMARY
+          OVERLAYNAME=${{ inputs.setname }} make -f Makefile.overlay y_${{ inputs.setname }}_overlays.zip.info >>  $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
           echo '---' >> $GITHUB_STEP_SUMMARY
 
@@ -203,8 +198,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            ${{ inputs.zip }}
-            ${{ inputs.zip }}.sha256
+            y_${{ inputs.setname }}_overlays.zip.*
+            y_${{ inputs.setname }}_overlays.zip.*.sha256
           tag_name: ${{ inputs.relname }}
 
       - name: Failure
