@@ -5,34 +5,35 @@ ZL?=16
 TILENAME?=test
 
 # This variable is expected to be null if the tile list has not yet been split
-TILES:=$(addprefix z_$(TILENAME)_, $(shell ls $(TILENAME)_tile_list.* | awk -F. '{ print $$2 }') ) 
+TILES:=$(addprefix z_$(TILENAME)_, $(shell ls $(TILENAME)_tile_list.* 2>/dev/null | awk -F. '{ print $$2 }') ) 
 ZIPS=$(addsuffix .zip, $(TILES))
 
 # Get the tiles listed in each list file
 .SECONDEXPANSION:
 # This variable is expected to be null if the tile list has not yet been split
-TILE_FILES=$(addsuffix .dsf, $(addprefix Ortho4XP/Tiles/*/*/*/, $(basename $(shell cat $(TILENAME)_tile_list.* ) ) ) )
+TILE_FILES=$(addsuffix .dsf, $(addprefix Ortho4XP/Tiles/*/*/*/, $(basename $(shell cat $(TILENAME)_tile_list.$* 2>/dev/null ) ) ) )
 #TILE_FILES=$(basename $(shell cat $(TILENAME)_tile_list.$* ) )
 
 
 all: $(ZIPS)
 
 z_$(TILENAME)_%: $(TILENAME)_tile_list.% $${TILE_FILES}
-	@echo "Going to do some $@"
+	@echo "[$@]"
 	@echo "Expected tile len:"
 	@cat $< | wc -l
 	@echo "Actual tile len:"
 	@unzip -l $@.zip *.dsf | grep dsf | wc -l
 	
-z_$(TILENAME)_%.zip.info: $(TILENAME)_tile_list.%
+z_$(TILENAME)_%.zip.info: z_$(TILENAME)_%.zip
+	@echo "[$@]"
 	@echo "-----------------------------------"
 	@echo "Post processing info:"
-	comm --total -3  <( unzip -l $(basename $@) *.dsf | awk -F/ '/.*\.dsf/ { print $$4 }' | sort ) <( cat $< | sort )
+	@comm --total -3  <( unzip -l $(basename $@) *.dsf | awk -F/ '/.*\.dsf/ { print $$4 }' | sort ) <( cat $(TILENAME)_tile_list.$* | sort )
 	@echo "-----------------------------------"
-	export EXPECTED=$$(cat $< | wc -l); \
-	export ACTUAL=$$(unzip -l $(basename $@) *.dsf | grep dsf | wc -l); \
-	echo "Expected tile len: $$EXPECTED"; \
-	echo "Actual tile len: $$ACTUAL"; \
+	@export EXPECTED=$$(cat $(TILENAME)_tile_list.$* | wc -l); \
+		export ACTUAL=$$(unzip -l $(basename $@) *.dsf | grep dsf | wc -l); \
+		echo "Expected tile len: $$EXPECTED"; \
+		echo "Actual tile len: $$ACTUAL"; \
 	[ $$EXPECTED -eq $$ACTUAL ]
 #
 # Ortho4XP setup
@@ -42,6 +43,7 @@ z_$(TILENAME)_%.zip.info: $(TILENAME)_tile_list.%
 # 	cd Ortho4XP && git diff > ../ortho4xp.diff
 
 Ortho4XP:
+	@echo "[$@]"
 	git clone --depth=1 https://github.com/oscarpilote/Ortho4XP.git
 #	cd $@ && patch -p1 -u < ../ortho4xp.diff
 	cp Ortho4XP.cfg $@/.
@@ -51,6 +53,7 @@ Ortho4XP:
 
 #$(TILENAME)_tile_list.%: $(TILENAME)_tile_list_chunks
 $(TILENAME)_tile_list_chunks: $(TILENAME)_tile_list
+	@echo "[$@]"
 	split $< -d -l $(SPLITSIZE) $<.
 	
 
@@ -64,6 +67,7 @@ $(TILENAME)_tile_list_chunks: $(TILENAME)_tile_list
 #	echo $<
 #Ortho4XP/Tiles/zOrtho4XP_%/.done: Ortho4XP 
 Ortho4XP/Tiles/*/*/*/%.dsf: Ortho4XP
+	@echo "[$@]"
 	@echo "Make tile $*"	
 	@echo "Setup per tile config, if possible"
 	mkdir -p Ortho4XP/Tiles/zOrtho4XP_$*
@@ -79,16 +83,19 @@ Ortho4XP/Tiles/*/*/*/%.dsf: Ortho4XP
 
 # Static pattern rule for the zip files
 $(ZIPS): z_%.zip: z_%
+	@echo "[$@]"
 	mkdir -p $<
 	cp -r Ortho4XP/Tiles/zOrtho4XP_*/'Earth nav data' $</.
 	cp -r Ortho4XP/Tiles/zOrtho4XP_*/terrain $</.
 	cp -r Ortho4XP/Tiles/zOrtho4XP_*/textures $</.
 	zip -r $@ $<
 	
-%.sha256: %		
+%.sha256: %
+	@echo "[$@]"
 	sha256sum $< > $@
 
 clean:
+	@echo "[$@]"
 	-rm -rf Ortho4XP
 	-rm $(ZIPS)
 	-rm -rf z_$(TILENAME)
