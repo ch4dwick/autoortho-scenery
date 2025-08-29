@@ -12,7 +12,7 @@ all: $(OVERLAY_PATHS) move_to_package y_$(OVERLAYNAME)_overlays.zip
 y_$(OVERLAYNAME)_overlays.zip:
 	@echo "[$@]"
 	zip -r $@ y_$(OVERLAYNAME)
-	split $@ -d -b1G $@.
+#	split $@ -d -b1G $@.
 
 %.sha256: %
 	@echo "[$@]"
@@ -42,7 +42,7 @@ move_to_package: y_$(OVERLAYNAME)
 Ortho4XP:
 	@echo "[$@]"
 	git clone --depth=1 https://github.com/oscarpilote/Ortho4XP.git
-	cd $@ && patch -p1 -u < ../ortho4xp.diff
+	-cd $@ && patch -p1 -u < ../ortho4xp.diff
 	cp extract_overlay.py $@/.
 	cp Ortho4XP.cfg $@/.
 	cd $@
