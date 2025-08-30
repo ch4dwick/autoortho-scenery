@@ -100,11 +100,11 @@ Ortho4XP/Tiles/*/*/*/%.dsf: Ortho4XP
 # Static pattern rule for the zip files
 $(ZIPS): z_%.zip: z_%
 	@echo "[$@]"
-	mkdir -p $<
-	cp -r Ortho4XP/Tiles/zOrtho4XP_*/'Earth nav data' $</.
-	cp -r Ortho4XP/Tiles/zOrtho4XP_*/terrain $</.
-	cp -r Ortho4XP/Tiles/zOrtho4XP_*/textures $</.
-	zip -r $@ $<
+	@mkdir -p $<
+	@cp -r Ortho4XP/Tiles/zOrtho4XP_*/'Earth nav data' $</.
+	@cp -r Ortho4XP/Tiles/zOrtho4XP_*/terrain $</.
+	@cp -r Ortho4XP/Tiles/zOrtho4XP_*/textures $</.
+	@zip -r $@ $<
 	
 %.sha256: %
 	@echo "[$@]"
@@ -112,8 +112,14 @@ $(ZIPS): z_%.zip: z_%
 
 clean:
 	@echo "[$@]"
+	-rm -rf Ortho4XP/Tiles/*
+	-rm -f $(ZIPS)
+	-rm -rf z_$(TILENAME)*
+	-rm -f $(TILENAME)_tile_list.*
+
+distclean: clean
+	@echo "[$@]"
 	-rm -rf Ortho4XP
-	-rm $(ZIPS)
-	-rm -rf z_$(TILENAME)
-	-rm -rf z_$(TILENAME)_*
-	-rm $(TILENAME)_tile_list.*
+	-rm -rf var
+	-rm -f z_*
+	-rm -f *_tile_list.*
