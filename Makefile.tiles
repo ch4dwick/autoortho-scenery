@@ -25,10 +25,6 @@ TILE_FILES=$(addsuffix .dsf, $(addprefix Ortho4XP/Tiles/*/*/*/, $(basename $(she
 
 all: $(ZIPS)
 
-# creates directories
-%/:
-	@mkdir -p $@
-
 #
 # Work on tile lists
 #
@@ -39,13 +35,13 @@ z_$(TILENAME)_%: $(TILENAME)_tile_list.% $${TILE_FILES}
 	@echo "Actual tile len:"
 	@unzip -l $@.zip *.dsf | grep dsf | wc -l
 	
-z_$(TILENAME)_%.zip.info: $(TILENAME)_tile_list.%
+z_$(TILENAME)_%.zip.info: z_$(TILENAME)_%.zip
 	@echo "[$@]"
 	@echo "-----------------------------------"
 	@echo "Post processing info:"
-	comm --total -3  <( unzip -l $(basename $@) *.dsf | awk -F/ '/.*\.dsf/ { print $$4 }' | sort ) <( cat $< | sort )
+	@comm --total -3  <( unzip -l $(basename $@) *.dsf | awk -F/ '/.*\.dsf/ { print $$4 }' | sort ) <( cat $(TILENAME)_tile_list.$* | sort )
 	@echo "-----------------------------------"
-	@export EXPECTED=$$(cat $< | wc -l); \
+	@export EXPECTED=$$(cat $(TILENAME)_tile_list.$* | wc -l); \
 		export ACTUAL=$$(unzip -l $(basename $@) *.dsf | grep dsf | wc -l); \
 		echo "Expected tile len: $$EXPECTED"; \
 		echo "Actual tile len: $$ACTUAL"; \
@@ -61,7 +57,6 @@ Ortho4XP:
 	@echo "[$@]"
 	git clone --depth=1 https://github.com/oscarpilote/Ortho4XP.git
 	-cd $@ && patch -p1 -u < ../ortho4xp.diff
-	cp extract_overlay.py $@/.
 	cp Ortho4XP.cfg $@/.
 	cd $@
 	mkdir $@/tmp

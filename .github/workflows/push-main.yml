@@ -46,8 +46,6 @@ jobs:
     needs: ziplist
     strategy:
       matrix: ${{ fromJSON(needs.ziplist.outputs.chunks) }}
-      # might still need several restarts of failed jobs, but prevents us from losing successful work
-      fail-fast: false
 
     uses: ./.github/workflows/build-tiles.yml
     with:
