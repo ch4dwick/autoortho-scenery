@@ -56,7 +56,6 @@ jobs:
       - name: Show work
         if: steps.build.outputs.done == 'true'
         run: |
-          TILENAME=${{ inputs.setname }} make -f Makefile.tiles ${{ inputs.zip }}.sha256
           echo '### ${{ inputs.setname }} : ${{ inputs.zip }}' >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
           #unzip -l ${{ inputs.zip }} *.dsf >> $GITHUB_STEP_SUMMARY
@@ -128,7 +127,6 @@ jobs:
       - name: Show work
         if: steps.rebuild.outputs.done == 'true'
         run: |
-          TILENAME=${{ inputs.setname }} make -f Makefile.tiles ${{ inputs.zip }}.sha256
           echo '### ${{ inputs.setname }} : ${{ inputs.zip }}' >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
           #unzip -l ${{ inputs.zip }} *.dsf >> $GITHUB_STEP_SUMMARY
@@ -201,7 +199,6 @@ jobs:
       - name: Show work
         if: steps.rebuild.outputs.done == 'true'
         run: |
-          TILENAME=${{ inputs.setname }} make -f Makefile.tiles ${{ inputs.zip }}.sha256
           echo '### ${{ inputs.setname }} : ${{ inputs.zip }}' >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
           #unzip -l ${{ inputs.zip }} *.dsf >> $GITHUB_STEP_SUMMARY
