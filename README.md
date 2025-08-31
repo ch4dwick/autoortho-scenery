@@ -41,6 +41,8 @@ make -f Makefile.tiles all
 - Downloads the tiles for packaging.
 - Packages downloaded tiles into the a zip prefixed with the region.
 
+Once done, move the newly created tiles from autoortho-scenery/z_<your region>/* to <Your xplane install folder>/Custom Scenery/z_autoortho/scenery/z_ao_<your region>. Move or copy the CONTENTS and not the folder itself.
+
 # Overlays
 
 Run Main Build via cli, assuming you want to run a test overlay:
@@ -62,3 +64,10 @@ OVERLAYNAME=test make -f Makefile.overlay all
 - copies overlay extract script
 - downloads and saves the overlay under Ortho4XP/yOrtho4XP_Overlays
 - collates them under ./y_(OVERLAYNAME)
+
+# Known issues
+Due to Ortho4XP's dependency on X-Plane's global scenery, the tiles created may have issues if you don't configure Ortho4XP to use it on build.
+
+Script doesn't take into consideration a modular build. Meaning if you re-ran the current Ortho4XP state after a successful build and then proceeded to create one for a different region, that build will contain tiles from the previous one. i.e. The zips will be an iteration of the prevoius one.
+
+SPLITSIZE isn't very useful for local builds as it was primarily used for github action's async build pipeline. If you're buiding this locally, there is no need to zip the finished folder as you only need to copy or move this to your AO folder.
