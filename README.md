@@ -7,14 +7,14 @@ This is a fork and refactor kubilus1's repository so it will build with a newer 
 
 Requirements
 - This repository was tested on Ubuntu 24.04.3 LTS
-- sudo apt update && sudo apt-get install -y python3 python3-pip python3-tk zip libgeos-dev
+- sudo apt update && sudo apt-get install -y g++ 7zip pkg-config python3 python3-pip python3-tk zip libgeos-dev
 
 
 ```bash
 # If you want to do venv, otherwise, skip the 2 commands
 python3 -m venv ao-scenery
 source ao-scenery/bin/activate
-pip3 install certifi chardet idna numpy Pillow pyproj requests Rtree Shapely urllib3 scikit-fmm
+pip3 install setuptools certifi chardet idna numpy Pillow pyproj requests Rtree Shapely urllib3 scikit-fmm
 ```
 
 Your environment should be ready to pull orthos.
