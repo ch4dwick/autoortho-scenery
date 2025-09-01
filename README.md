@@ -41,7 +41,7 @@ make -f Makefile.tiles all
 - Downloads the tiles for packaging.
 - Packages downloaded tiles into the a zip prefixed with the region.
 
-Once done, move the newly created tiles from autoortho-scenery/z_<your region>/* to <Your xplane install folder>/Custom Scenery/z_autoortho/scenery/z_ao_<your region>. Move or copy the CONTENTS and not the folder itself.
+Once done, move the newly created tiles from autoortho-scenery/z_\<your region>/* to \<Your xplane install folder>/Custom Scenery/z_autoortho/scenery/z_ao_<your region>. Move or copy the CONTENTS and not the folder itself.
 
 # Overlays
 
@@ -71,3 +71,9 @@ Due to Ortho4XP's dependency on X-Plane's global scenery, the tiles created may 
 Script doesn't take into consideration a modular build. Meaning if you re-ran the current Ortho4XP state after a successful build and then proceeded to create one for a different region, that build will contain tiles from the previous one. i.e. The zips will be an iteration of the prevoius one.
 
 SPLITSIZE isn't very useful for local builds as it was primarily used for github action's async build pipeline. If you're buiding this locally, there is no need to zip the finished folder as you only need to copy or move this to your AO folder.
+
+# Download recovery
+
+There's a probablility that downloading a tile may have an issue with the provider (e.g. I had issue with tile +20+110). You can try manually downloading that tile via python3 Ortho4XP.py +/-LAT +/-LON. If O4XP really can't download that file, remove that entry from the tile list - both on the source \<region>_tile_list and \<region>_tile_list.nn. Also remove that tile's folder from O4XP via "rm -rf OSM_data/+20+110 Tiles/zOrtho4XP_+20+110 Elevation_data/+20+110".  Resume by running make -f Makefile.tiles all again. Note that make tries to check the files already downloaded so if you've been running the build for hours, expect some time for make to check the files downloaded before moving forward. If you're running this off a remote drive, you may experience longer resumption.
+
+I will try my best to remove any problematic tiles from the tile lists as humanly possible.
