@@ -6,7 +6,7 @@
 # make -f Makefile.tiles test_tile_list_chunks
 # make -f Makefile.tiles -j $(nproc --ignore=2) all
 
-SPLITSIZE?=500
+SPLITSIZE?=125
 SHELL=/bin/bash
 ZL?=16
 
@@ -66,18 +66,12 @@ Ortho4XP:
 #$(TILENAME)_tile_list.%: $(TILENAME)_tile_list_chunks
 $(TILENAME)_tile_list_chunks: $(TILENAME)_tile_list
 	@echo "[$@]"
-	split $< -d -l $(SPLITSIZE) $<.
+	split -a3 $< -d -l $(SPLITSIZE) $<.
 	
 
 #
 # Tile pack setup
 #
-
-#Ortho4XP/Tiles/zOrtho4XP_%: Ortho4XP/Tiles/zOrtho4XP_%/.done
-#.PHONY: %.dsf
-#%.dsf: Ortho4XP/Tiles/zOrtho4XP_%/.done
-#	echo $<
-#Ortho4XP/Tiles/zOrtho4XP_%/.done: Ortho4XP 
 Ortho4XP/Tiles/*/*/*/%.dsf: Ortho4XP
 	@echo "[$@]"
 	@echo "Make tile $*"	
@@ -88,7 +82,7 @@ Ortho4XP/Tiles/*/*/*/%.dsf: Ortho4XP
 	set -e;\
 	export COORDS=$$(echo $(@) | sed -e 's/.*\/\([-+][0-9]\+\)\([-+][0-9]\+\).dsf/\1 \2/g');\
 	echo $$COORDS; \
- 	cd $< && python3 Ortho4XP.py $$COORDS BI $(ZL) || ( echo "ERROR DETECTED! Retry tile $@ with noroads config."; cp $(CURDIR)/Ortho4XP_noroads.cfg $(CURDIR)/Ortho4XP/Tiles/zOrtho4XP_$*/Ortho4XP_$*.cfg && python3 Ortho4XP.py $$COORDS BI $(ZL) )
+ 	cd $< && python3 Ortho4XP.py $$COORDS BI $(ZL) || ( echo "ERROR DETECTED! Retrying tile $@ with noroads config."; cp $(CURDIR)/Ortho4XP_noroads.cfg $(CURDIR)/Ortho4XP/Tiles/zOrtho4XP_$*/Ortho4XP_$*.cfg && python3 Ortho4XP.py $$COORDS BI $(ZL) )
 #   touch $@
 
 .SECONDARY: $(TILE_FILES) 
@@ -97,12 +91,20 @@ Ortho4XP/Tiles/*/*/*/%.dsf: Ortho4XP
 # CAVEAT: This is won't work if you previously executed other regions in the past. 
 $(ZIPS): z_%.zip: z_%
 	@echo "[$@]"
-	@mkdir -p $<
-	@cp -r Ortho4XP/Tiles/zOrtho4XP_*/'Earth nav data' $</.
-	@cp -r Ortho4XP/Tiles/zOrtho4XP_*/terrain $</.
-	@cp -r Ortho4XP/Tiles/zOrtho4XP_*/textures $</.
-	@zip -r $@ $<
-	
+# 	@mkdir -p $<
+# 	@cp -r Ortho4XP/Tiles/zOrtho4XP_*/'Earth nav data' $</.
+# 	@cp -r Ortho4XP/Tiles/zOrtho4XP_*/terrain $</.
+# 	@cp -r Ortho4XP/Tiles/zOrtho4XP_*/textures $</.
+# 	@zip -r $@ $<
+
+copy:
+	@echo "[$@]"
+	@mkdir -p z_$(TILENAME)
+	@cp -r --update=none Ortho4XP/Tiles/zOrtho4XP_*/'Earth nav data' z_$(TILENAME)/.
+	@cp -r --update=none Ortho4XP/Tiles/zOrtho4XP_*/terrain z_$(TILENAME)/.
+	@cp -r --update=none Ortho4XP/Tiles/zOrtho4XP_*/textures z_$(TILENAME)/.
+# 	@zip -r $@ $<
+
 %.sha256: %
 	@echo "[$@]"
 	sha256sum $< > $@
