@@ -29,7 +29,7 @@ TILENAME - This the region of tiles you want to download. Valid values are: asi 
 export TILENAME=test
 
 make -f Makefile.tiles ${TILENAME}_tile_list_chunks
-make -f Makefile.tiles all
+make -f Makefile.tiles -j $(nproc --ignore=2) all
 ```
 
 **WARNING**: All regions except 'test' are long running, bandwith and storage consuming processes. Make sure your home set up can handle it. Ortho provider may also throttle your downloads.
@@ -51,7 +51,7 @@ OVERLAYNAME = This the region of overlays you want to download. Valid values are
 Update Ortho4XP.cfg key custom_overlay_src to your local X-Plane 12 Global Scenery folder found in <Your X-Plane 12 folder>\Global Scenery\X-Plane 12 Global Scenery
 
 ```bash
-OVERLAYNAME=test make -f Makefile.overlay all
+OVERLAYNAME=test make -f Makefile.overlay -j $(nproc --ignore=2) all
 ```
 
 **WARNING**: All regions except 'test' are long running, bandwith and storage consuming processes. Make sure your home set up can handle it. Ortho provider may also throttle your downloads.
