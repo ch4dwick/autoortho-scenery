@@ -62,19 +62,6 @@ OVERLAYNAME=test make -f Makefile.overlay -j $(nproc --ignore=2) all
 - downloads and saves the overlay under Ortho4XP/yOrtho4XP_Overlays
 - collates them under ./y_(OVERLAYNAME)
 
-# Known issues
-Due to Ortho4XP's dependency on X-Plane's global scenery, the tiles created may have issues if you don't configure Ortho4XP to use it on build.
-
-Script doesn't take into consideration a modular build. Meaning if you re-ran the current Ortho4XP state after a successful build and then proceeded to create one for a different region, that build will contain tiles from the previous one. i.e. The zips will be an iteration of the prevoius one.
-
-SPLITSIZE isn't very useful for local builds as it was primarily used for github action's async build pipeline. If you're buiding this locally, there is no need to zip the finished folder as you only need to copy or move this to your AO folder.
-
-# Download recovery
-
-There's a probablility that downloading a tile may have an issue with the provider (e.g. I had issue with tile +20+110). You can try manually downloading that tile via python3 Ortho4XP.py +/-LAT +/-LON. If O4XP really can't download that file, remove that entry from the tile list - both on the source \<region>_tile_list and \<region>_tile_list.nn. Also remove that tile's folder from O4XP via "rm -rf OSM_data/+20+110 Tiles/zOrtho4XP_+20+110 Elevation_data/+20+110".  Resume by running make -f Makefile.tiles all again. Note that make tries to check the files already downloaded so if you've been running the build for hours, expect some time for make to check the files downloaded before moving forward. If you're running this off a remote drive, you may experience longer resumption. Note, that tiles that were removed may throw an error if your flight needs it enroute.
-
-I will try my best to remove any problematic tiles from the tile lists as humanly possible.
-
 # [hotbso](https://github.com/hotbso/o4xp_2_xp12) Script for Seasons
 
 As is, the AO Scenery tiles don't respond to the new XP12 seasons. hotbso has created a script that updates Ortho tiles data with seasons.
@@ -98,3 +85,18 @@ To convert the entire folder:
 To only update a region's tiles:
 > o4xp_2_xp12_ubuntu-latest -subset z_ao_eur convert
 Make sure that region's folder exists before executing.
+
+# Known issues
+Due to Ortho4XP's dependency on X-Plane's global scenery, the tiles created may have issues if you don't configure Ortho4XP to use it on build.
+
+Script doesn't take into consideration a modular build. Meaning if you re-ran the current Ortho4XP state after a successful build and then proceeded to create one for a different region, that build will contain tiles from the previous one. i.e. The zips will be an iteration of the prevoius one.
+
+SPLITSIZE isn't very useful for local builds as it was primarily used for github action's async build pipeline. If you're buiding this locally, there is no need to zip the finished folder as you only need to copy or move this to your AO folder.
+
+Performance: This and hotbso's script are I/O intensive, avoid using this on a hard drive if possibe, otherwise, it would take you not only hours but days to complete an entire region's workflow.
+
+# Download recovery
+
+There's a probablility that downloading a tile may have an issue with the provider (e.g. I had issue with tile +20+110). You can try manually downloading that tile via python3 Ortho4XP.py +/-LAT +/-LON. If O4XP really can't download that file, remove that entry from the tile list - both on the source \<region>_tile_list and \<region>_tile_list.nn. Also remove that tile's folder from O4XP via "rm -rf OSM_data/+20+110 Tiles/zOrtho4XP_+20+110 Elevation_data/+20+110".  Resume by running make -f Makefile.tiles all again. Note that make tries to check the files already downloaded so if you've been running the build for hours, expect some time for make to check the files downloaded before moving forward. If you're running this off a remote drive, you may experience longer resumption. Note, that tiles that were removed may throw an error if your flight needs it enroute.
+
+I will try my best to remove any problematic tiles from the tile lists as humanly possible.
