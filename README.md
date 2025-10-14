@@ -97,7 +97,7 @@ SPLITSIZE is optional for local builds as it was primarily used for github actio
 
 This and hotbso's script are I/O intensive, avoid using this on a hard drive if possibe, otherwise, it would take you not only hours but days to complete an entire region's workflow.
 
-During my tests, this script was used WSL on Windows 11 to build the tiles. While ao-scenery performed significantly faster, hotbso's script was dismally slow. If you are experiencing this, I recommend you move the results outside of WSL and run the Windows version of hotbso' script. Details on what to copy are defined [here](https://github.com/ch4dwick/autoortho-scenery/blob/11090ca6f77413d789cc69b27e70f495d6a44506/Makefile.tiles#L100).
+During my tests to build the tiles, this script used WSL on Windows 11. While ao-scenery performed significantly faster, hotbso's script was dismally slow. If you are experiencing this, I recommend you move the results outside of WSL and run the Windows version of hotbso' script. Details on what to copy are defined [here](https://github.com/ch4dwick/autoortho-scenery/blob/11090ca6f77413d789cc69b27e70f495d6a44506/Makefile.tiles#L100).
 
 # Download recovery
 
