@@ -89,11 +89,15 @@ Make sure that region's folder exists before executing.
 # Known issues
 Due to Ortho4XP's dependency on X-Plane's global scenery, the tiles created may have issues if you don't configure Ortho4XP to use it on build.
 
-Script doesn't take into consideration a modular build. Meaning if you re-ran the current Ortho4XP state after a successful build and then proceeded to create one for a different region, that build will contain tiles from the previous one. i.e. The zips will be an iteration of the prevoius one.
+Script doesn't take into consideration a modular build. Meaning if you re-ran the current Ortho4XP state after a successful build and then proceeded to create one for a different region, that build will contain tiles from the previous one. i.e. The zips will be an iteration of the prevoius one. A workaround I have practiced was to rename the Ortho4XP from one batch (e.g. Ortho4XP_asi) and pull a fresh copy of Ortho4XP, leaving the older one containing one region intact.
 
-SPLITSIZE isn't very useful for local builds as it was primarily used for github action's async build pipeline. If you're buiding this locally, there is no need to zip the finished folder as you only need to copy or move this to your AO folder.
+SPLITSIZE is optional for local builds as it was primarily used for github action's async build pipeline. If you're buiding this locally, there is no need to zip the finished folder as you only need to copy or move this to your AO folder. To avoid this script from generating multiple chunk files, just set split size to a significantly higher number, like, 50000 or something.
 
-Performance: This and hotbso's script are I/O intensive, avoid using this on a hard drive if possibe, otherwise, it would take you not only hours but days to complete an entire region's workflow.
+## Performance
+
+This and hotbso's script are I/O intensive, avoid using this on a hard drive if possibe, otherwise, it would take you not only hours but days to complete an entire region's workflow.
+
+During my tests, this script was used WSL on Windows 11 to build the tiles. While ao-scenery performed significantly faster, hotbso's script was dismally slow. If you are experiencing this, I recommend you move the results outside of WSL and run the Windows version of hotbso' script. Details on what to copy are defined [here](https://github.com/ch4dwick/autoortho-scenery/blob/11090ca6f77413d789cc69b27e70f495d6a44506/Makefile.tiles#L100).
 
 # Download recovery
 
