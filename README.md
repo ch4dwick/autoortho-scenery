@@ -31,13 +31,10 @@ export TILENAME=test
 make -f Makefile.tiles ${TILENAME}_tile_list_chunks
 make -f Makefile.tiles -j $(nproc --ignore=2) all
 ```
-
-**WARNING**: All regions except 'test' are long running, bandwith and storage consuming processes. Make sure your home set up can handle it. Ortho provider may also throttle your downloads.
-
 - Generates initial tile chunks so you know how many zip files it generates.
 - Downloads the tiles for packaging.
 - Packages downloaded tiles into the a zip prefixed with the region.
-
+**WARNING**: All regions except 'test' are long running, bandwith and storage consuming processes. Make sure your home set up can handle it. Ortho provider may also throttle your downloads.
 Once done, move the newly created tiles from autoortho-scenery/z_\<your region>/* to \<Your xplane install folder>/Custom Scenery/z_autoortho/scenery/z_ao_<your region>. Move or copy the CONTENTS and not the folder itself.
 
 # Overlays
@@ -53,15 +50,12 @@ Update Ortho4XP.cfg key custom_overlay_src to your local X-Plane 12 Global Scene
 ```bash
 OVERLAYNAME=test make -f Makefile.overlay -j $(nproc --ignore=2) all
 ```
-
-**WARNING**: All regions except 'test' are long running, bandwith and storage consuming processes. Make sure your home set up can handle it. Ortho provider may also throttle your downloads.
-
 - installs the latest Ortho4XP
 - copies our custom configuration
 - copies overlay extract script
 - downloads and saves the overlay under Ortho4XP/yOrtho4XP_Overlays
 - collates them under ./y_(OVERLAYNAME)
-
+**WARNING**: All regions except 'test' are long running, bandwith and storage consuming processes. Make sure your home set up can handle it. Ortho provider may also throttle your downloads.
 # [hotbso](https://github.com/hotbso/o4xp_2_xp12) Script for Seasons
 
 As is, the AO Scenery tiles don't respond to the new XP12 seasons. hotbso has created a script that updates Ortho tiles data with seasons.
@@ -89,7 +83,7 @@ Make sure that region's folder exists before executing.
 # Known issues
 Due to Ortho4XP's dependency on X-Plane's global scenery, the tiles created may have issues if you don't configure Ortho4XP to use it on build.
 
-Script doesn't take into consideration a modular build. Meaning if you re-ran the current Ortho4XP state after a successful build and then proceeded to create one for a different region, that build will contain tiles from the previous one. i.e. The zips will be an iteration of the prevoius one. A workaround I have practiced was to rename the Ortho4XP from one batch (e.g. Ortho4XP_asi) and pull a fresh copy of Ortho4XP, leaving the older one containing one region intact.
+Script doesn't take into consideration a modular build. Meaning if you re-ran the current Ortho4XP state after a successful build and then proceeded to create one for a different region, that build will contain tiles from the previous one. i.e. The zips will be an iteration of the previous one. A workaround I have practiced was to rename the Ortho4XP from one batch (e.g. Ortho4XP_asi) and pull a fresh copy of Ortho4XP, leaving the older one containing one region intact.
 
 SPLITSIZE is optional for local builds as it was primarily used for github action's async build pipeline. If you're buiding this locally, there is no need to zip the finished folder as you only need to copy or move this to your AO folder. To avoid this script from generating multiple chunk files, just set split size to a significantly higher number, like, 50000 or something.
 
